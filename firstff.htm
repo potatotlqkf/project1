@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #FCF6F5;
+    padding: 20px;
+    }
+
+    .container {
+        max-width: 400px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    input[type="email"],
+    input[type="password"],
+select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        }
+
+    input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        background-color: #7b9acc;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #7b9acc;
+    }
+
+    .form-footer {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .error {
+        color: red;
+        font-size: 12px;
+        margin-top: -10px;
+    }
+    </style>
+    
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>로그인</h2>
+        <form id="loginForm">
+            <label for="email">이메일</label>
+            <input type="email" id="email" name="email" required placeholder="이메일을 입력하세요">
+
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" required placeholder="비밀번호를 입력하세요">
+
+            <span id="error-message" class="error"></span>
+	    <input type="submit" value="로그인">
+        </form>
+        <div class="form-footer">
+            <p>"아직 계정이 없으신가요?" 
+	<a href="signup.html">회원가입</a></p>
+        </div>
+    </div>
+
+    <script type="module">
+        
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyCPfxM_-ZxbPAAt_e81PjsSn5lpLnr8EG8",
+          authDomain: "project1-abd5e.firebaseapp.com",
+          projectId: "project1-abd5e",
+          storageBucket: "project1-abd5e.firebasestorage.app",
+          messagingSenderId: "842714905421",
+          appId: "1:842714905421:web:80d45b53b6de025a411504"
+      };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+
+        // Handle form submission
+        document.getElementById('loginForm').addEventListener('submit', async function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.textContent = ''; // Clear previous errors
+
+            try {
+                // Sign in the user with Firebase Authentication
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                console.log("Logged in successfully: ", user);
+
+                alert("로그인 성공!");
+                // Redirect to the main page after login
+                window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"; // main.html로 이동 (적절한 페이지로 수정)
+            } catch (error) {
+                console.error("Error: ", error);
+                if (error.code === 'auth/user-not-found') {
+                    errorMessage.textContent = '존재하지 않는 이메일입니다.';
+                } else if (error.code === 'auth/wrong-password') {
+                    errorMessage.textContent = '비밀번호가 틀렸습니다.';
+                } else {
+                    errorMessage.textContent = `오류: ${error.message}`;
+                }
+            }
+        });
+    
+    </script>
+
+</body>
+
+</html>
